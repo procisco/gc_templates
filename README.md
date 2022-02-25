@@ -1,2 +1,2 @@
 # gc_templates
-nautobot golden config templates
+Nautobot Golden Config Templates
