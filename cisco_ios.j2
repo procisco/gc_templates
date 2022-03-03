@@ -10,7 +10,7 @@ service timestamps log datetime msec
 service password-encryption
 service sequence-numbers
 !
-{%+ include './ios/hostname.j2' %}
+{% include './ios/hostname.j2' %}
 !
 boot-start-marker
 boot-end-marker
