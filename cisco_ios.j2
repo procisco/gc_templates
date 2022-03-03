@@ -1,0 +1,155 @@
+!
+!
+version 15.6
+service nagle
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec
+service password-encryption
+service sequence-numbers
+!
+{% include './ios/hostname.j2' %}
+!
+boot-start-marker
+boot-end-marker
+!
+!
+logging buffered informational
+no logging console
+enable password 7 1217000317050D06262E
+!
+no aaa new-model
+ethernet lmi ce
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+no ip icmp rate-limit unreachable
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip domain name ablab.com
+ip cef
+login on-failure log
+login on-success log
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+username netadmin privilege 15 password 7 130B12060A08092325
+!
+redundancy
+!
+lldp run
+no cdp log mismatch duplex
+!
+ip tcp synwait-time 5
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description MANAGEMENT
+ ip address 192.168.255.1 255.255.255.255
+!
+interface GigabitEthernet0/0
+ ip address 192.168.254.101 255.255.255.0
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/2
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/3
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip ssh version 2
+!
+logging facility local0
+logging source-interface Loopback0
+logging host 192.168.3.1
+logging host 192.168.4.1
+!
+!
+access-list 98 permit 192.168.254.0 0.0.0.255 log
+access-list 99 permit 192.168.1.1
+access-list 99 permit 192.168.2.1
+!
+control-plane
+!
+banner login ^C
+LISTEN TO MY BANNER AND STAY OUT
+IF YOU DON'T BELONG, THANKS!
+^C
+banner motd ^C
+you are not welcome (unless we like you)
+^C
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line vty 0 4
+ access-class 98 in
+ exec-timeout 15 0
+ login local
+ transport input ssh
+ transport output telnet ssh
+!
+no scheduler allocate
+ntp source Loopback0
+ntp access-group peer 99
+ntp server 192.168.1.1
+ntp server 192.168.2.1
+!
+end
